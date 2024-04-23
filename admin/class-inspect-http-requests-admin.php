@@ -154,7 +154,7 @@ class Inspect_Http_Requests_Admin {
 			array(
 				'URL'          => sanitize_url( $url ),
 				'request_args' => $request_args,
-				'response'     => json_encode( $response ),
+				'response'     => '',
 				'transport'    => $transport,
 				'runtime'      => ( microtime( true ) - $this->start_time ),
 				'date_added'   => date( 'Y-m-d H:i:s' ),
