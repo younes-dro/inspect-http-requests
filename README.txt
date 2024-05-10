@@ -4,7 +4,7 @@ Donate link: https://paypal.me/supportets
 Tags: log, wp_http, requests, update checks, api, http_api_debug, pre_http_request, http_request_args
 Requires at least: 3.0.1
 Tested up to: 6.5
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,8 +66,11 @@ define( 'inspect_http_requests_ignored_urls', [
 == Screenshots ==
 1. The plugin menu is Available inside tools
 
-= 1.0.6 =
-* Support Wordpress 6.4.2
+== Changelog ==
+
+= 1.0.8 =
+
+* Updated functionality to retrieve the base URL and compare it with database entries. Manually added base URLs with runtime 0 are now ignored. Note: This functionality currently applies only to base URLs.
 * Sort the admin page on blocked url's and sort URL's on alphabet
 * Stop logging to database if administrator has manually added a matching base-url in the database.
 * Added option to block by default, define( 'inspect-http-requests-default-block', true ) in wp-config.php
@@ -80,6 +83,10 @@ define( 'inspect_http_requests_ignored_urls', [
         'api',
   ]);
 </PRE>
+
+= 1.0.7 =
+* Support WordPress 6.5
+
 = 1.0.4 =
 * Support WordPress 6.3
 
