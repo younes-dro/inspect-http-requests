@@ -148,12 +148,16 @@ class Inspect_Http_Requests_Admin {
 		}
 		$table_name = $this->table_name;
 
-                /* Try to get $default_block from wp_config.php */
-                if (defined('inspect_http_requests_default_block')) {
-                        if ( ( inspect_http_requests_default_block == true )||( inspect_http_requests_default_block == "1" ) ) {
-                                $default_block = 1;
-                        } else { $default_block = 0; }
-                } else { $default_block = 0; }
+		/* Try to get $default_block from wp_config.php */
+		if ( defined( 'inspect_http_requests_default_block' ) ) {
+			if ( ( constant( 'inspect_http_requests_default_block' ) == true ) || ( constant( 'inspect_http_requests_default_block' ) == '1' ) ) {
+				$default_block = 1;
+			} else {
+				$default_block = 0;
+			}
+		} else {
+			$default_block = 0;
+		}
 
 		$request_args       = json_encode( $args );
 		$http_api_call_data = apply_filters(
@@ -201,13 +205,13 @@ class Inspect_Http_Requests_Admin {
 			$ets_checked = 0;
 		}
 
-		$update_sql = $wpdb->prepare( " UPDATE `{$table_name}` SET `is_blocked` = %s WHERE `ID` =%d;" ,$ets_checked, $_POST['ets_url_id'] );
+		$update_sql = $wpdb->prepare( " UPDATE `{$table_name}` SET `is_blocked` = %s WHERE `ID` =%d;", $ets_checked, $_POST['ets_url_id'] );
 		if ( $wpdb->query( $update_sql ) ) {
-			if ( $ets_checked === 1 && ets_inspect_http_request_get_blocked_url ( $_POST['ets_url_id'] ) ) {
-				$url_to_log = ets_inspect_http_request_get_blocked_url ( $_POST['ets_url_id'] );
+			if ( $ets_checked === 1 && ets_inspect_http_request_get_blocked_url( $_POST['ets_url_id'] ) ) {
+				$url_to_log = ets_inspect_http_request_get_blocked_url( $_POST['ets_url_id'] );
 				ets_inspect_http_request_log_blocked_url( $url_to_log );
 			}
-			echo json_encode( ['re' => 'yes'] );
+			echo json_encode( array( 're' => 'yes' ) );
 		} else {
 			$wpdb->print_error();
 		}
@@ -220,23 +224,24 @@ class Inspect_Http_Requests_Admin {
 	 * @since    1.0.0
 	 */
 	public function ets_inspect_http_requests_ignore_specific_hostname( $data ) {
-                /* Try to get array $ignored_urls from wp.config.php */
-                if ( defined( 'inspect_http_requests_ignored_urls' ) ) {
-                       $ignored_urls = inspect_http_requests_ignored_urls;
-                } else {
-                        /* Get the BASE-URL of our wordpress site and remove the scheme */
-                        $site_url = home_url();
-                        $url_parts = parse_url($site_url);
-                        $url_base  = $url_parts['host'];
-                        /* Create $ignored_urls */
-                        $ignored_urls = [ $url_base, 'wordpress.org'];
-                }
+		/* Try to get array $ignored_urls from wp.config.php */
+		if ( defined( 'inspect_http_requests_ignored_urls' ) ) {
+			$ignored_urls = constant( 'inspect_http_requests_ignored_urls' );
+
+		} else {
+				/* Get the BASE-URL of our WordPress site and remove the scheme */
+				$site_url  = home_url();
+				$url_parts = parse_url( $site_url );
+				$url_base  = $url_parts['host'];
+				/* Create $ignored_urls */
+				$ignored_urls = array( $url_base, 'wordpress.org' );
+		}
 
 		/* Loop through the ignorelist */
-		foreach ($ignored_urls as $iu) {
-                	if ( false !== strpos( $data['URL'], $iu ) ) {
-                        	return false;
-                	}
+		foreach ( $ignored_urls as $iu ) {
+			if ( false !== strpos( $data['URL'], $iu ) ) {
+					return false;
+			}
 		}
 
 		if ( ets_inspect_http_request_check_duplicate_url( $data['URL'] ) ) {
@@ -258,11 +263,11 @@ class Inspect_Http_Requests_Admin {
 		if ( is_array( $list_urls ) && count( $list_urls ) > 0 ) {
 			return new WP_Error( 'http_request_block', __( 'This request is not allowed', 'inspect-http-requests' ) );
 		} else {
-			return $preempt;                    
-		}                           
-        }
+			return $preempt;
+		}
+	}
 
-	public function ets_inspect_http_requests_get_runtime ( $args ) {
+	public function ets_inspect_http_requests_get_runtime( $args ) {
 		$this->start_time = microtime( true );
 		return $args;
 	}
@@ -297,28 +302,33 @@ class Inspect_Http_Requests_Admin {
 			exit();
 		}
 
-		// Validate url 
-		if ( filter_var( trim( $_POST['valid_url'] ) , FILTER_VALIDATE_URL ) === false ){
+		// Validate url
+		if ( filter_var( trim( $_POST['valid_url'] ), FILTER_VALIDATE_URL ) === false ) {
 			echo 'false';
 			exit();
 		}
 
-                /* Try to get $default_block from wp_config.php */
-                if (defined('inspect_http_requests_default_block')) {
-                        if ( ( inspect_http_requests_default_block == true )||( inspect_http_requests_default_block == "1" ) ) {
-                                $default_block = 1;
-                        } else { $default_block = 0; }
-                } else { $default_block = 0; }
+				/* Try to get $default_block from wp_config.php */
+		if ( defined( 'inspect_http_requests_default_block' ) ) {
+			if ( ( inspect_http_requests_default_block == true ) || ( inspect_http_requests_default_block == '1' ) ) {
+						$default_block = 1;
+			} else {
+				$default_block = 0; }
+		} else {
+			$default_block = 0; }
 
-		$http_api_call_data = apply_filters( 'ets_inspect_http_requests_ignore_hostname', array(
-			'URL' => sanitize_url ( $_POST['valid_url'] ),
-			'request_args' => '',
-			'response' => '',
-			'transport' => '', 
-			'runtime' => '',
-			'date_added' => date('Y-m-d H:i:s'),
-			'is_blocked' => $default_block, 
-			) ) ;
+		$http_api_call_data = apply_filters(
+			'ets_inspect_http_requests_ignore_hostname',
+			array(
+				'URL'          => sanitize_url( $_POST['valid_url'] ),
+				'request_args' => '',
+				'response'     => '',
+				'transport'    => '',
+				'runtime'      => '',
+				'date_added'   => date( 'Y-m-d H:i:s' ),
+				'is_blocked'   => $default_block,
+			)
+		);
 		if ( false !== $http_api_call_data ) {
 			if ( ! $wpdb->insert( $table_name, $http_api_call_data ) ) {
 				$wpdb->print_error();
@@ -328,10 +338,10 @@ class Inspect_Http_Requests_Admin {
 		exit();
 	}
 
-	public function ets_inspect_http_requests_delete_url (){
+	public function ets_inspect_http_requests_delete_url() {
 		global $wpdb;
 		$table_name = $this->table_name;
-                
+
 		if ( ! current_user_can( 'administrator' ) ) {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
@@ -341,16 +351,16 @@ class Inspect_Http_Requests_Admin {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
-		$url_id = $_POST['url_id'];
-		$delete_sql = $wpdb->prepare( "DELETE FROM `{$table_name}` WHERE `ID` ='%d'; " , $url_id );
-		if( $wpdb->query( $delete_sql ) ){
-			echo ets_inspect_http_request_get_data();                    
-			
+		$url_id     = $_POST['url_id'];
+		$delete_sql = $wpdb->prepare( "DELETE FROM `{$table_name}` WHERE `ID` ='%d'; ", $url_id );
+		if ( $wpdb->query( $delete_sql ) ) {
+			echo ets_inspect_http_request_get_data();
+
 		} else {
 			echo 'false';
 		}
-                
+
 		exit();
-            
+
 	}
 }
