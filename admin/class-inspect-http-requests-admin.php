@@ -148,12 +148,12 @@ class Inspect_Http_Requests_Admin {
 		}
 		$table_name = $this->table_name;
 
-	        /* Try to get $defaultblock from wp_config.php */
-		if ( isset( $inspect_http_requests_default_block ) ) {
-	                $defaultblock = $inspect_http_requests_default_block;
-		} else {
-			$defaultblock = 0;
-		}
+                /* Try to get $default_block from wp_config.php */
+                if (defined('inspect_http_requests_default_block')) {
+                        if ( ( inspect_http_requests_default_block == true )||( inspect_http_requests_default_block == "1" ) ) {
+                                $default_block = 1;
+                        } else { $default_block = 0; }
+                } else { $default_block = 0; }
 
 		$request_args       = json_encode( $args );
 		$http_api_call_data = apply_filters(
@@ -165,7 +165,7 @@ class Inspect_Http_Requests_Admin {
 				'transport'    => $transport,
 				'runtime'      => ( microtime( true ) - $this->start_time ),
 				'date_added'   => date( 'Y-m-d H:i:s' ),
-				'is_blocked'   => $defaultblock,
+				'is_blocked'   => $default_block,
 			)
 		);
 		if ( false !== $http_api_call_data ) {
@@ -303,12 +303,12 @@ class Inspect_Http_Requests_Admin {
 			exit();
 		}
 
-		/* Try to get $defaultblock from wp_config.php */
-                if ( isset( $inspect_http_requests_default_block ) ) {
-                        $defaultblock = $inspect_http_requests_default_block;
-                } else {
-                        $defaultblock = 0;
-                }
+                /* Try to get $default_block from wp_config.php */
+                if (defined('inspect_http_requests_default_block')) {
+                        if ( ( inspect_http_requests_default_block == true )||( inspect_http_requests_default_block == "1" ) ) {
+                                $default_block = 1;
+                        } else { $default_block = 0; }
+                } else { $default_block = 0; }
 
 		$http_api_call_data = apply_filters( 'ets_inspect_http_requests_ignore_hostname', array(
 			'URL' => sanitize_url ( $_POST['valid_url'] ),
@@ -317,7 +317,7 @@ class Inspect_Http_Requests_Admin {
 			'transport' => '', 
 			'runtime' => '',
 			'date_added' => date('Y-m-d H:i:s'),
-			'is_blocked' => $defaultblock, 
+			'is_blocked' => $default_block, 
 			) ) ;
 		if ( false !== $http_api_call_data ) {
 			if ( ! $wpdb->insert( $table_name, $http_api_call_data ) ) {
