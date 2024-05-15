@@ -1,7 +1,7 @@
-=== Plugin Name ===
+=== Inspect HTTP Requests ===
 Contributors: expresstechsoftware, webbdeveloper, sunnysoni, vanbom, eilandert
 Donate link: https://paypal.me/supportets
-Tags: log, wp_http, requests, update checks, api, http_api_debug, pre_http_request, http_request_args
+Tags: log, wp_http, requests, update checks, api
 Requires at least: 3.0.1
 Tested up to: 6.5
 Stable tag: 1.0.8

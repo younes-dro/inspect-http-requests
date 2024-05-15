@@ -26,7 +26,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'INSPECT_HTTP_REQUESTS_VERSION', '1.0.7' );
+define( 'INSPECT_HTTP_REQUESTS_VERSION', '1.0.8' );
 /**
  * Define plugin directory path
  */
